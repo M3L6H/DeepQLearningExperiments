@@ -55,13 +55,8 @@ class Window:
   def __updateImage(self):
     self.pix = Image.open(self.image_path).thumbnail(self.size * self.zoom).load()
 
-
-  def setImage(self, image_path):
-    self.image_path = image_path
-    self.__updateImage()
-
   
-  def setZoom(self, zoom):
+  def __setZoom(self, zoom):
     if not self.image_path:
       raise RuntimeError("Cannot set zoom without image!")
 
@@ -69,8 +64,24 @@ class Window:
     self.__updateImage()
 
 
+  def setImage(self, image_path):
+    self.image_path = image_path
+    self.__updateImage()
+
+  
+  def zoomIn(self):
+    self.__setZoom(self.zoom + 1)
+
+
+  def zoomOut(self):
+    if self.zoom > 1:
+      self.__setZoom(self.zoom - 1)
+
+
   def translate(self, offset):
-    self.pos += offset
+    # We translate proportionally to the zoom level to avoid losing ourselves
+    # when we are zoomed closer
+    self.pos += offset * self.zoom
 
 
 class ImageEnv:
