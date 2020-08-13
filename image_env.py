@@ -52,30 +52,30 @@ class Window:
     self.zoom = zoom
 
   
-  def __updateImage(self):
+  def __update_image(self):
     self.pix = Image.open(self.image_path).thumbnail(self.size * self.zoom).load()
 
   
-  def __setZoom(self, zoom):
+  def __set_zoom(self, zoom):
     if not self.image_path:
       raise RuntimeError("Cannot set zoom without image!")
 
     self.zoom = zoom
-    self.__updateImage()
+    self.__update_image()
 
 
-  def setImage(self, image_path):
+  def set_image(self, image_path):
     self.image_path = image_path
-    self.__updateImage()
+    self.__update_image()
 
   
-  def zoomIn(self):
-    self.__setZoom(self.zoom + 1)
+  def zoom_in(self):
+    self.__set_zoom(self.zoom + 1)
 
 
-  def zoomOut(self):
+  def zoom_out(self):
     if self.zoom > 1:
-      self.__setZoom(self.zoom - 1)
+      self.__set_zoom(self.zoom - 1)
 
 
   def translate(self, offset):
@@ -92,7 +92,7 @@ class ImageEnv:
     print(f"Initialized image environment with\n\twindow_size: { window_size }\n\tnum_windows: { num_windows }")
 
 
-  def setImage(self, image_path):
+  def set_image(self, image_path):
     self.image_path = image_path
     self.image = Image.open(image_path)
     self.pix = self.image.load()
@@ -101,4 +101,4 @@ class ImageEnv:
 
 env = ImageEnv()
 path = r"C:\Users\Michael\Desktop\Images\Ahsoka\Ahsoka-Hi-Res-0SFW-01.jpg"
-env.setImage(path)
+env.set_image(path)
