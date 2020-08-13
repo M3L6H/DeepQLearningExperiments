@@ -7,7 +7,7 @@ class Vector2D:
     
     if isinstance(x, list) or isinstance(x, tuple):
       self.x = x[0]
-      self.y = y[0]
+      self.y = x[1]
     elif isinstance(x, Vector2D):
       self.x = x.x
       self.y = x.y
@@ -44,16 +44,25 @@ class Vector2D:
     elif isinstance(other, int) or isinstance(other, float):
       return Vector2D(self.x * other, self.y * other)
 
+  
+  def __getitem__(self, key):
+    if key in ["x", "X", "0", 0]:
+      return self.x
+    elif key in ["y", "Y", "1", 1]:
+      return self.y
+
 
 class Window:
   def __init__(self, size, pos=Vector2D(0, 0), zoom=1):
-    self.size = size
+    self.size = Vector2D(size)
     self.pos = pos
     self.zoom = zoom
 
   
   def __update_image(self):
-    self.pix = Image.open(self.image_path).thumbnail(self.size * self.zoom).load()
+    image = Image.open(self.image_path)
+    image.thumbnail(self.size * self.zoom)
+    self.pix = image.load()
 
   
   def __set_zoom(self, zoom):
@@ -85,17 +94,20 @@ class Window:
 
 
 class ImageEnv:
-  def __init__(self, window_size=64, num_windows=16):
+  def __init__(self, window_size=(64, 64), num_windows=16):
     self.window_size = window_size
     self.num_windows = num_windows
+    self.windows = [Window(window_size) for _ in range(num_windows)]
 
-    print(f"Initialized image environment with\n\twindow_size: { window_size }\n\tnum_windows: { num_windows }")
+    print(f"Initialized image environment with:\n\twindow_size: { window_size }\n\tnum_windows: { num_windows }")
 
 
   def set_image(self, image_path):
     self.image_path = image_path
     self.image = Image.open(image_path)
     self.pix = self.image.load()
+    for window in self.windows:
+      window.set_image(image_path)
     print(f"Loaded { image_path }")
 
 
